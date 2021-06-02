@@ -2,22 +2,12 @@ from NewsApi.app import db, ma
 from datetime import datetime
 import logging as lg
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(40), unique=True, nullable=False)
     status = db.Column(db.String(80))
-
-class Sentiment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(3000), nullable=True)
-    sentiment_score = db.Column(db.String(20), nullable=False)
-    sentiment_classification = db.Column(db.String(10), nullable=False)
-
-    def __init__(self, description, sentiment_score, sentiment_classification):
-        self.description = description
-        self.sentiment_score = sentiment_score
-        self.sentiment_classification = sentiment_classification
 
 
 class Headlines(db.Model):
