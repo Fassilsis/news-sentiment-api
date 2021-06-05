@@ -1,53 +1,44 @@
 import operator
 
 from flask import request, make_response, jsonify
-from NewsApi.app import app, db
+from NewsApi.app import app, exception_handler
 from NewsApi import models
+from flask_restful import Resource
+from flask_jwt_extended import create_access_token
+from NewsApi.errors import SchemaValidationError, EmailAlreadyExistsError, UserPermissionError, InternalServerError
 
 
-@app.route('/register', methods=['POST'])
-def sign_up():
-    new_user = models.User(username=request.json['username'],
-                           email=request.json['email'])
-    if not new_user:
-        error = 'Username is required.'
-    elif not password:
-        error = 'Password is required.'
-    elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-    ).fetchone() is not None:
-        error = f"User {username} is already registered."
-    db.session.add(new_user)
-    db.session.commit()
-    return make_response(jsonify(response='OK'), 201)
+class UserRegistration:
+    def post(self):
+        try:
+            body = request.get_json()
+            user = models.User(**body)
+            user.hash_password()
+            db.session.add(news_headline)
+            db.session.commit()
+            return make_response(jsonify(message= user), 200)
+         # except FieldDoesNotExist:
+         #     raise SchemaValidationError
+         # except NotUniqueError:
+         #     raise EmailAlreadyExistsError
+        except Exception as e:
+            raise InternalServerError
 
 
-
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
-
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = f"User {username} is already registered."
-
-        if error is None:
-            db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
-            )
-            db.commit()
-            return redirect(url_for('auth.login'))
-
-        flash(error)
-
-    return render_template('auth/register.html')
+class UserLogin():
+     def post(self):
+         try:
+             body = request.get_json()
+             user = models.User.objects.get(email=body.get('email'))
+             authorized = user.check_password(body.get('password'))
+             if not authorized:
+                 raise UserPermissionError
+             expiration_date = datetime.timedelta(days=30)
+             access_token = create_access_token(identity=str(user.id), expires_delta=expiration_date)
+             return make_response(jsonify(access_token='30-day-user-access-token',
+                                          token_type='bearer',
+                                          expires_in=f'{}'        }
+         # except (UnauthorizedError, DoesNotExist):
+         #     raise UnauthorizedError
+         except Exception as e:
+             raise InternalServerError

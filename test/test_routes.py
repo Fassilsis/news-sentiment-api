@@ -40,3 +40,19 @@ def client():
 def test_latest_article(client):
     response = client.get("/latest-article")
     assert response.json == {"response": "OK"}
+
+
+@app.route('/not-found')
+def testing():
+    raise MissingUserError()
+
+ext = JSONExceptionHandler(app)
+ext.register(code_or_exception=MissingUserError)
+
+with app.app_context():
+    with app.test_client() as c:
+        rv = c.get('/not-found')
+
+assert rv.status_code == 404
+assert rv.headers['content-type'] == 'application/json'
+assert json.loads(rv.data)['message'] == 'No such user exists.'
