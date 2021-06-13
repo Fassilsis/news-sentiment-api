@@ -1,4 +1,4 @@
-from NewsApi import create_app
+from NewsApi import create_app, db
 
 app = create_app()
 

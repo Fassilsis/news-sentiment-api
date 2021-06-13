@@ -1,5 +1,5 @@
 """
-    This contains sentiment analysis models
+    This file contains sentiment analysis models
 """
 import json
 import pandas as pd
@@ -15,14 +15,8 @@ class SentimentAnalyzer:
         df['Sentiments'] = df['description'].apply(lambda i: sia.polarity_scores(i))
         df = pd.concat([df.drop(['Sentiments'], axis=1), df['Sentiments'].apply(pd.Series)], axis=1)
         df['sentiment_score'] = df['compound']
+        df['sentiment_classification'] = df['sentiment_score'].apply(lambda x: 'positive' if x > 0 else 'neutral' if x == 0 else 'negative')
         df = df.drop(['compound', 'pos', 'neu', 'neg', 'description'], axis=1)
-        for i in range(0, len(df)):
-            if (df.loc[i, 'sentiment_score'] > 0):
-                df.loc[i, 'sentiment_classification'] = 'Positive'
-            elif (df.loc[i, 'sentiment_score'] < 0):
-                df.loc[i, 'sentiment_classification'] = 'Negative'
-            else:
-                df.loc[i, 'sentiment_classification'] = 'Neutral'
         return df
 
     @staticmethod
@@ -35,7 +29,7 @@ class SentimentAnalyzer:
     @staticmethod
     def positive(df):
         df = SentimentAnalyzer.classifier(df)
-        positive = df[(df.sentiment_classification == 'Positive')]
+        positive = df[(df.sentiment_classification == 'positive')]
         result = positive.to_json(orient='records')
         parsed = json.loads(result)
         return parsed

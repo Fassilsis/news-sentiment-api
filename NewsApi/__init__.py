@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from NewsApi.config import Config
 
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"autoflush": False})
 bcrypt = Bcrypt()
 jwt = JWTManager()
 login_manager = LoginManager()
@@ -22,6 +22,15 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     login_manager.init_app(app)
+
+    # Ensure FOREIGN KEY for sqlite3
+    if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+        def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute('pragma foreign_keys=ON')
+
+        with app.app_context():
+            from sqlalchemy import event
+            event.listen(db.engine, 'connect', _fk_pragma_on_connect)
 
     from NewsApi.users.routes import users
     from NewsApi.news.routes import news

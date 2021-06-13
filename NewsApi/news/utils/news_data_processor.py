@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-class DataProcessor:
+class NewsDataProcessor:
     @staticmethod
-    def data_processor(searched_news):
+    def get_news_data(searched_news):
         articles = searched_news['articles']
         total_results = len(articles)
         title = []
