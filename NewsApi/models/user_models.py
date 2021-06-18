@@ -12,8 +12,8 @@ def load_user(email):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, index=True)
-    email = db.Column(db.String(64), unique=True, index=True)
+    username = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     role_name = db.Column(db.String, db.ForeignKey('roles.name'))
@@ -21,8 +21,8 @@ class User(db.Model, UserMixin):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == "admin@nlp-news-api.com":
-                self.role = Role.query.filter_by(name='Administrator').first()
+            if self.email == "admin@dummyapp.com":
+                self.role = Role.query.filter_by(name='admin').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
@@ -48,10 +48,6 @@ class User(db.Model, UserMixin):
     def filter_by_username(cls, username):
         return cls.query.filter_by(username=username).first()
 
-    @classmethod
-    def filter_by_username(cls, username):
-        return cls.query.filter_by(username=username).first()
-
     def add_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -71,7 +67,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    default = db.Column(db.Boolean, default=False, index=True)
+    default = db.Column(db.Boolean, default=False)
     users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __init__(self, **kwargs):

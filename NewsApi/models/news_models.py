@@ -25,6 +25,26 @@ class NewsSentimentMetaData(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def serialize(self):
+        return {'time_accessed': self.time_accessed,
+                'neutral_news_percentage': self.neutral_news_percentage,
+                'negative_news_percentage': self.negative_news_percentage,
+                'positive_news_percentage': self.positive_news_percentage,
+                'total_number_of_news_articles': self.total_number_of_news_articles,
+                'sources': self.sources,
+                'keywords': self.keywords,
+                'username': self.username,
+                'id': self.id
+                }
+
+    @classmethod
+    def filter_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
+
+    @classmethod
+    def filter_by_keywords(cls, keywords):
+        return cls.query.filter_by(keywords=keywords).first()
+
     def __repr__(self):
         return '<NewsSentimentMetaData %r>' % self.keywords
 
@@ -53,6 +73,28 @@ class NewsEmotionsMetaData(db.Model):
     def remove_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    def serialize(self):
+        return {'id': self.id,
+                'username': self.username,
+                'keywords': self.keywords,
+                'sources': self.sources,
+                'total_number_of_news_articles': self.total_number_of_news_articles,
+                'happy_percentage': self.happy_percentage,
+                'angry_percentage': self.angry_percentage,
+                'sad_percentage': self.sad_percentage,
+                'surprise_percentage': self.surprise_percentage,
+                'fear_percentage': self.fear_percentage,
+                'time_accessed': self.time_accessed
+                }
+
+    @classmethod
+    def filter_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
+
+    @classmethod
+    def filter_by_keywords(cls, keywords):
+        return cls.query.filter_by(keywords=keywords).first()
 
     def __repr__(self):
         return '<NewsEmotionsMetaData %r>' % self.keywords

@@ -60,3 +60,32 @@ def test_get_news_emotions__with_jwt(client):
                           json={"q": "bitcoin",
                                 "sources": "cnn, bbc-news"})
     assert response.status_code == 201
+
+
+def test_get_happy_news(client):
+    res = client.post('/users/login', json={"username": "user3",
+                                            "password": "password"})
+    credentials = res.get_json()["access_token"]
+    access_headers = {"Authorization": f"Bearer {credentials}"}
+    response = client.get('/news/happy-news',
+                          headers=access_headers,
+                          json={"sources": "cnn"})
+    assert response.status_code == 201
+
+
+def test_get_all_news_emotions_metadata(client):
+    res = client.post('/users/login', json={"username": "user3",
+                                            "password": "password"})
+    credentials = res.get_json()["access_token"]
+    access_headers = {'Authorization': f'Bearer {credentials}'}
+    response = client.get('/news/emotions-metadata', headers=access_headers)
+    assert response.status_code == 200
+
+
+def test_get_all_news_sentiments_metadata(client):
+    res = client.post('/users/login', json={"username": "admin",
+                                            "password": "password"})
+    credentials = res.get_json()["access_token"]
+    access_headers = {'Authorization': f'Bearer {credentials}'}
+    response = client.get('/news/sentiments-metadata', headers=access_headers)
+    assert response.status_code == 200
