@@ -3,7 +3,7 @@ from NewsApi.news.utils.news_sentiment_analyzer import SentimentAnalyzer
 from NewsApi.news.utils.news_emotion_analyzer import EmotionAnalyzer
 from NewsApi.models.news_models import NewsSentimentMetaData, NewsEmotionsMetaData
 from NewsApi.models.user_models import User
-from flask import jsonify, request, make_response, Blueprint
+from flask import jsonify, request, make_response, Blueprint, render_template
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from newsapi import NewsApiClient
 from NewsApi.api_key import api_key
@@ -17,7 +17,7 @@ news_api = NewsApiClient(api_key=api_key)
 @news.route('/')
 @news.route('/home')
 def home():
-    return 'This is a News Api'
+    return render_template('index.html')
 
 
 @news.route('/news/sentiments', methods=['GET'])

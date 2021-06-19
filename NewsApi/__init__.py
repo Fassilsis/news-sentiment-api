@@ -23,7 +23,6 @@ def create_app():
     jwt.init_app(app)
     login_manager.init_app(app)
 
-    # Ensure FOREIGN KEY for sqlite3
     if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
         def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
             dbapi_con.execute('pragma foreign_keys=ON')
