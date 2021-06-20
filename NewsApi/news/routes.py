@@ -216,5 +216,3 @@ def get_all_news_sentiments_metadata():
             return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
         except Exception as e:
             return make_response(jsonify(error_message=str(e)), 400)
-
-
