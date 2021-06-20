@@ -1,6 +1,6 @@
 import pytest
-from NewsApi import create_app, db
-from NewsApi.models.user_models import User, Role
+from SEAN_API import create_app, db
+from SEAN_API.models.user_models import User, Role
 
 app = create_app()
 
