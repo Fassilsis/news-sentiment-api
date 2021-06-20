@@ -1,8 +1,8 @@
 venv
+SEAN_API/api_key.py
 .idea
 data.db
 test.db
-SEAN_API/api_key.py
 .pytest_cache
 tests/test_routes/.pytest_cache
 test/__pycache__/
