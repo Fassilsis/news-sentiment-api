@@ -32,6 +32,11 @@ In addition to q and qintitle, you can search news using the following parameter
     ~~~
     pip install r requirements.txt
     ~~~
+4. Create api_key.py file under NewsApi directory and put your api key form https://newsapi.org/ as shown below.
+    ~~~
+    api_key="yourapikey"
+    ~~~   
+   
 4. Run sean.py in your terminal
     ~~~
     python sean.py
