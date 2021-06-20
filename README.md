@@ -44,6 +44,7 @@ In addition to q and qintitle, you can search news using the following parameter
 
 ##Endpoints
 
+
 **No.** | **HTTP Method**   | **Route** | **Description**
 ---:|:---:|:---:| ---
 1 |**GET** | /news/sentiments | _API to allow users get news with sentiments._
