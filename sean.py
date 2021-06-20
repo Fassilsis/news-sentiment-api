@@ -1,4 +1,4 @@
-from NewsApi import create_app, db
+from SEAN_API import create_app, db
 
 app = create_app()
 
