@@ -5,3 +5,4 @@ data.db
 test.db
 .pytest_cache
 tests/test_routes/.pytest_cache
+test/__pycache__/
