@@ -3,6 +3,7 @@ NewsApi/api_key.py
 .idea
 data.db
 test.db
+api_key.py
 .pytest_cache
 tests/test_routes/.pytest_cache
 test/__pycache__/
