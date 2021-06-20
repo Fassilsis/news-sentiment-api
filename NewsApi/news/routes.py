@@ -2,7 +2,8 @@ from NewsApi.news.utils.news_data_processor import NewsDataProcessor
 from NewsApi.news.utils.news_sentiment_analyzer import SentimentAnalyzer
 from NewsApi.news.utils.news_emotion_analyzer import EmotionAnalyzer
 from NewsApi.models.news_models import NewsSentimentMetaData, NewsEmotionsMetaData
-from flask import jsonify, request, make_response, Blueprint
+from NewsApi.models.user_models import User
+from flask import jsonify, request, make_response, Blueprint, render_template
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from newsapi import NewsApiClient
 from NewsApi.api_key import api_key
@@ -16,7 +17,7 @@ news_api = NewsApiClient(api_key=api_key)
 @news.route('/')
 @news.route('/home')
 def home():
-    return 'This is a News Api'
+    return render_template('index.html')
 
 
 @news.route('/news/sentiments', methods=['GET'])
@@ -136,3 +137,82 @@ def get_news_emotions():
             return make_response(jsonify(error_message=str(e)), 400)
     else:
         return make_response(jsonify(error_message='No input detected'), 400)
+
+
+@news.route('/news/happy-news', methods=['GET'])
+@jwt_required()
+def get_happy_news():
+    """
+        :search parameters:
+            q=None, qintitle=None, sources=None,
+            domains=None, exclude_domains=None,
+            from_param=None, to=None,
+            language=None, sort_by=None,
+            page=None, page_size=None,
+        :return:
+            happy news + emotions
+        """
+    search_parameters = request.get_json()
+    if search_parameters is not None:
+        try:
+            searched_news = news_api.get_everything(**search_parameters)
+
+            df = NewsDataProcessor.get_news_data(searched_news)
+            happy_news = EmotionAnalyzer.happy(df)
+            return make_response(jsonify(status='ok',
+                                         total_results=len(happy_news),
+                                         detail_info=happy_news), 201)
+        except exc.SQLAlchemyError as e:
+            return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
+        except Exception as e:
+            return make_response(jsonify(error_message=str(e)), 400)
+    else:
+        return make_response(jsonify(message='No input detected'), 400)
+
+
+@news.route('/news/emotions-metadata', methods=['GET'])
+@jwt_required()
+def get_all_news_emotions_metadata():
+
+    if User.query.filter_by(role_name='admin').first():
+        try:
+            metadata = list(map(lambda x: x.serialize(), NewsEmotionsMetaData.query.all()))
+            total = NewsEmotionsMetaData.query.count()
+            return make_response(jsonify(metadata=metadata, total=total), 200)
+        except exc.SQLAlchemyError as e:
+            return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
+        except Exception as e:
+            return make_response(jsonify(error_message=str(e)), 400)
+    else:
+        try:
+            metadata = list(map(lambda x: x.serialize(), NewsEmotionsMetaData.query.filter_by(username=get_jwt_identity()).all()))
+            total = NewsEmotionsMetaData.query.filter_by(username=get_jwt_identity()).count()
+            return make_response(jsonify(metadata=metadata, total=total), 200)
+        except exc.SQLAlchemyError as e:
+            return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
+        except Exception as e:
+            return make_response(jsonify(error_message=str(e)), 400)
+
+
+@news.route('/news/sentiments-metadata', methods=['GET'])
+@jwt_required()
+def get_all_news_sentiments_metadata():
+
+    if User.query.filter_by(role_name='admin').first():
+        try:
+            metadata = list(map(lambda x: x.serialize(), NewsSentimentMetaData.query.all()))
+            total = NewsSentimentMetaData.query.count()
+            return make_response(jsonify(metadata=metadata, total=total), 200)
+        except exc.SQLAlchemyError as e:
+            return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
+        except Exception as e:
+            return make_response(jsonify(error_message=str(e)), 400)
+    else:
+        try:
+            metadata = list(map(lambda x: x.serialize(), NewsSentimentMetaData.query.filter_by(username=get_jwt_identity()).all()))
+            total = NewsSentimentMetaData.query.filter_by(username=get_jwt_identity()).count()
+            return make_response(jsonify(metadata=metadata, total=total), 200)
+        except exc.SQLAlchemyError as e:
+            return make_response(jsonify(SQLAlchemy_error_message=str(e)), 400)
+        except Exception as e:
+            return make_response(jsonify(error_message=str(e)), 400)

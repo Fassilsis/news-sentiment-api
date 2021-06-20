@@ -97,3 +97,4 @@ def search_all():
         search_result = list(map(lambda user: user.serialize(), User.query.all()))
         total_users = User.query.count()
         return make_response(jsonify(users=search_result, total_users=total_users), 200)
+

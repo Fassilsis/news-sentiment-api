@@ -1,6 +1,6 @@
 import pytest
 from NewsApi import create_app, db
-from NewsApi.models.user_models import User
+from NewsApi.models.user_models import User, Role
 
 app = create_app()
 
@@ -19,16 +19,12 @@ def client():
     with app.app_context():
         db.drop_all()
         db.create_all()
-        user1 = User(username='user1', email='user1@dummyapp.com', password='password', role_name='user')
-        user2 = User(username='user2', email='user2@dummyapp.com', password='password', role_name='user')
-        user3 = User(username='user3', email='user3@dummyapp.com', password='password', role_name='user')
-        admin = User(username='admin', email='admin@dummyapp.com', password='password', role_name='admin')
-        db.session.add(user1)
-        db.session.add(user3)
-        db.session.add(admin)
-        db.session.commit()
+        Role.insert_roles()
+        user1 = User(username='user1', email='user1@dummyapp.com', password='password')
+        user3 = User(username='user3', email='user3@dummyapp.com', password='password')
+        admin = User(username='admin', email='admin@dummyapp.com', password='password')
+        user1.add_to_db()
+        user3.add_to_db()
+        admin.add_to_db()
+
     yield client
-
-
-
-

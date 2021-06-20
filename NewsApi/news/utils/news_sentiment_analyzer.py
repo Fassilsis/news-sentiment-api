@@ -15,7 +15,7 @@ class SentimentAnalyzer:
         df['Sentiments'] = df['description'].apply(lambda i: sia.polarity_scores(i))
         df = pd.concat([df.drop(['Sentiments'], axis=1), df['Sentiments'].apply(pd.Series)], axis=1)
         df['sentiment_score'] = df['compound']
-        df['sentiment_classification'] = df['sentiment_score'].apply(lambda x: 'positive' if x > 0 else 'neutral' if x == 0 else 'negative')
+        df['sentiment_classification'] = df['sentiment_score'].apply(lambda x: 'positive' if x > 0.2 else 'negative' if x <= -0.2 else 'neutral')
         df = df.drop(['compound', 'pos', 'neu', 'neg', 'description'], axis=1)
         return df
 
