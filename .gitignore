@@ -1,5 +1,4 @@
 venv
-NewsApi/api_key.py
 .idea
 data.db
 test.db
