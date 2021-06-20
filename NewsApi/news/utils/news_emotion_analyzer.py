@@ -19,6 +19,14 @@ class EmotionAnalyzer:
         return parsed
 
     @staticmethod
+    def happy(df):
+        df = EmotionAnalyzer.emotions(df)
+        happy_news = df.loc[(df.Happy >= 0.4)]
+        result = happy_news.to_json(orient='records')
+        parsed = json.loads(result)
+        return parsed
+
+    @staticmethod
     def emotions_summary(df):
         df = EmotionAnalyzer.emotions(df)
         emotion_percentage = 100*(df.mean(axis=0, numeric_only=True))
