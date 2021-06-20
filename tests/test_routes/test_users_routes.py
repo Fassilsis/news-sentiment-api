@@ -87,3 +87,5 @@ def test_for_accessing_all_users_info__logged_in_as_user(client):
     response = client.get("/users/search")
     assert response.status_code == 403
     assert response.json == {"message": "You are not authorised to view this resource."}
+
+

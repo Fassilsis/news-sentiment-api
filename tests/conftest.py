@@ -28,7 +28,3 @@ def client():
         admin.add_to_db()
 
     yield client
-
-
-
-

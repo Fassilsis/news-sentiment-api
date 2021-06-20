@@ -89,3 +89,4 @@ def test_get_all_news_sentiments_metadata(client):
     access_headers = {'Authorization': f'Bearer {credentials}'}
     response = client.get('/news/sentiments-metadata', headers=access_headers)
     assert response.status_code == 200
+
