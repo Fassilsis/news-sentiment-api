@@ -18,7 +18,7 @@ You can get positive and uplifting news if you so choose. With the help of SEAN,
 
 In addition to q and qintitle, you can search news using the following parameters: sources, domains, exclude_domains, from_param(date), to(date), language, sort_by,page, and page_size.
 
-##Project Setup
+## Project Setup
 
 1. Fork the project from Github
     ~~~
@@ -42,7 +42,7 @@ In addition to q and qintitle, you can search news using the following parameter
     python sean.py
     ~~~
 
-##Endpoints
+## Endpoints
 
 
 **No.** | **HTTP Method**   | **Route** | **Description**
